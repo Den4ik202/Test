@@ -53,10 +53,13 @@ class Hvost {                                                      // созда
       key = true;                                                  // показываем что мы съели яблоко
     }
 
-    void update_coord(int coord_x1, int coord_y1) {                // функция для движение хвоста
+    void update_coord(int coord_x1, int coord_y1, bool WIN) { // функция для движение хвоста
       if (key) {                                                   // если съели яблоко
         score ++;                                                  // увеличиваем переменную которая отвечает за размер змей в игре
         key = false;                                               // мы не съели яблоко
+        if (score == 100) {
+          WIN = true;
+        }
       }
       for (int i = score; i >= 0; i--) {                           // передача кординат
         if (i == 0) {                                              // если мы на первом хвосте
@@ -112,47 +115,49 @@ class Head {                                                       // созда
     bool Deatch = true;                                            // если мы проиграли то true
     bool Win = true;                                               // если мы выиграли то true
 
-    void set_coord(int teleport) {                                             // функция для передвижения головы
-      switch (player.azimut) {                                     // получаем направление головы
-        case 1:                                                    // если направление головы идет вверх                                               // кординату головы по y уменьшаем на 1
-          if (teleport) {                                          // если телепорты истина
-            if (0 < coord_y) coord_y--;                            // кординату головы по x уменьшвем на 1
-            else           coord_x = coord_x + visota;             // переносим голову на противоположную сторону
-          }
-          else {
-            coord_y--;                                             // кординату головы по x уменьшвем на 1
-          }
-          break;
+    void set_coord(int teleport) {                                 // функция для передвижения головы
+      if (!Deatch && !Win) {
+        switch (player.azimut) {                                     // получаем направление головы
+          case 1:                                                    // если направление головы идет вверх
+            if (teleport) {                                          // если телепорты истина
+              if (0 < coord_y) coord_y--;                            // кординату головы по x уменьшвем на 1
+              else           coord_x = coord_x + visota;             // переносим голову на противоположную сторону
+            }
+            else {
+              coord_y--;                                             // кординату головы по x уменьшвем на 1
+            }
+            break;
 
-        case 3:                                                    // если направление головы идет вниз
-          if (teleport) {                                          // если телепорты истина
-            if (coord_y < visota) coord_y++;                       // кординату головы по x уменьшвем на 1
-            else           coord_y = coord_y - visota;             // переносим голову на противоположную сторону
-          }
-          else {
-            coord_y++;                                             // кординату головы по x уменьшвем на 1
-          }
-          break;
+          case 3:                                                    // если направление головы идет вниз
+            if (teleport) {                                          // если телепорты истина
+              if (coord_y < visota) coord_y++;                       // кординату головы по x уменьшвем на 1
+              else           coord_y = coord_y - visota;             // переносим голову на противоположную сторону
+            }
+            else {
+              coord_y++;                                             // кординату головы по x уменьшвем на 1
+            }
+            break;
 
-        case 0:                                                    // если напрваление головы идет влево
-          if (teleport) {                                          // если телепорты истина
-            if (0 < coord_x) coord_x--;                            // кординату головы по x уменьшвем на 1
-            else           coord_x = coord_x + shirina;            // переносим голову на противоположную сторону
-          }
-          else {
-            coord_x--;                                             // кординату головы по x уменьшвем на 1
-          }
-          break;
+          case 0:                                                    // если напрваление головы идет влево
+            if (teleport) {                                          // если телепорты истина
+              if (0 < coord_x) coord_x--;                            // кординату головы по x уменьшвем на 1
+              else           coord_x = coord_x + shirina;            // переносим голову на противоположную сторону
+            }
+            else {
+              coord_x--;                                             // кординату головы по x уменьшвем на 1
+            }
+            break;
 
-        case 2:                                                    // если напрваление головы идет вправо                                               // кординату головы по x увеличиваем на 1
-          if (teleport) {                                          // если телепорты истина
-            if (coord_x < shirina) coord_x++;                      // кординату головы по x уменьшвем на 1
-            else           coord_x = coord_x - shirina;            // переносим голову на противоположную сторону
-          }
-          else {
-            coord_x++;                                              // кординату головы по x уменьшвем на 1
-          }
-          break;
+          case 2:                                                    // если напрваление головы идет вправо
+            if (teleport) {                                          // если телепорты истина
+              if (coord_x < shirina) coord_x++;                      // кординату головы по x уменьшвем на 1
+              else           coord_x = coord_x - shirina;            // переносим голову на противоположную сторону
+            }
+            else {
+              coord_x++;                                              // кординату головы по x увеличиваем на 1
+            }
+            break;
+        }
       }
     }
 
@@ -203,27 +208,27 @@ class Window {
     bool teleport = false;                                         // если мы хотим чтоб при врезании в стену мы проигрывали то flase
 
     void Menu() {                                                  // функция которая ввыводит начальное меню
-      myOLED.clrScr();
-      myOLED.print("Snake Game", 38, 5);
+      myOLED.clrScr();                                             // очищаем дисплей
+      myOLED.print("Snake Game", 38, 5);                           // ввыводим текст на дисплей
       myOLED.print("press any button", 0, 30);
       myOLED.print("by: Den4ik202", 50, 55);
-      myOLED.update();
+      myOLED.update();                                             // обновляем дисплей
     }
 
     void Win() {                                                   // функция которая ввыводит экран победы
-      myOLED.clrScr();
-      myOLED.print("You Win", 38, 5);
+      myOLED.clrScr();                                             // очищаем дисплей
+      myOLED.print("You Win", 38, 5);                              // ввыводим текст на дисплей
       myOLED.print("press any button", 0, 30);
-      myOLED.update();
+      myOLED.update();                                             // обновляем дисплей
     }
 
     void Death() {                                                 // функция которая ввыводит экран поражения
-      myOLED.clrScr();
-      myOLED.print("You Lose", 38, 5);
+      myOLED.clrScr();                                             // очищаем дисплей
+      myOLED.print("You Lose", 38, 5);                             // ввыводим текст на дисплей
       myOLED.print("press any button", 0, 30);
-      myOLED.update();
+      myOLED.update();                                             // обновляем дисплей
     }
-}; Window window;                                                 // вызываем Окно как окно
+};   Window window;                                                // вызываем Окно как окно
 
 void setup() {
   myOLED.begin();                                                  // подключаем дисплей
@@ -231,56 +236,62 @@ void setup() {
 }
 
 void loop() {
-  if (head.Deatch == true && head.Win == true) {
-    window.Menu();
-    if (!digitalRead(player._pin_but0)) {
-      window.teleport = true;
-      head.Deatch = false;
-      head.Win = false;
-    }
-    else if (!digitalRead(player._pin_but1)) {
-      window.teleport = false;
-      head.Deatch = false;
-      head.Win = false;
-    }
-  }
-
-  else if (!head.Deatch && !head.Win) {                            // если мы не проиграли или не выиграли то играем дальше
+  if (!head.Deatch && !head.Win) {                                 // если мы не проиграли или не выиграли то играем дальше
     wall.draw();                                                   // рисуем стену
     apple.draw();                                                  // рисуем яблоко
     head.draw();                                                   // рисуем голову
     head.eat();                                                    // съели ли мы яблоко?
-    hvost.update_coord(head.coord_x, head.coord_y);                // передаем кординаты хвоста
+    hvost.update_coord(head.coord_x, head.coord_y, head.Win);      // передаем кординаты хвоста
     player.set_butt();                                             // считаем кнопки
-    head.set_coord(window.teleport);                                              // даем кординаты голове
+    head.set_coord(window.teleport);                               // даем кординаты голове
     hvost.draw();                                                  // рисуем хвост
     head.chek_deathWin();                                          // столкнулись ли мы с хвостом?
     wall.perimetr();                                               // столкнулись ли мы со стеной?
     delay(100);                                                    // ждем 100 милисикунд
   }
 
-  else if (head.Deatch && !head.Win) {
-    window.Death();
-    if (!digitalRead(player._pin_but0) || !digitalRead(player._pin_but1) || !digitalRead(player._pin_but2) || !digitalRead(player._pin_but3)) {
-      head.Deatch = true;
+
+
+  else if (head.Deatch && !head.Win) {                             // если мы проиграли
+    window.Death();                                                // вызываем функцию смерть
+    if (!digitalRead(player._pin_but0) || !digitalRead(player._pin_but1) || !digitalRead(player._pin_but2) || !digitalRead(player._pin_but3)) {  // если хотя-бы одна кнопка нажато то
+      head.Deatch = true;                                          // возращаемся в меню
       head.Win = true;
-      for (int s = 0; s < hvost.score; s++) {
+      for (int s = 0; s < hvost.score; s++) {                      // пробигаемся по хвосту и стираем его
         hvost.hvostic[s] = {0, 0, s};
       }
-      hvost.score = 0;
-      head.coord_x = shirina / 2;
+      hvost.score = 0;                                             // хвост = 0
+      head.coord_x = shirina / 2;                                  // поевляемся по середне поля
       head.coord_y = visota / 2;
     }
   }
 
-  else if (!head.Deatch && head.Win) {
-    window.Win();
-    if (!digitalRead(player._pin_but0) || !digitalRead(player._pin_but1) || !digitalRead(player._pin_but2) || !digitalRead(player._pin_but3)) {
-      head.Deatch = true;
+  else if (!head.Deatch && head.Win) {                             // если мы выиграли
+    window.Win();                                                  // вызывем функцию выигрыш
+    if (!digitalRead(player._pin_but0) || !digitalRead(player._pin_but1) || !digitalRead(player._pin_but2) || !digitalRead(player._pin_but3)) {   // если хотя-бы одна кнопка нажато то
+      head.Deatch = true;                                          // возращаемся в меню
       head.Win = true;
-      hvost.score = 0;
-      head.coord_x = shirina / 2;
+      for (int s = 0; s < hvost.score; s++) {                      // пробигаемся по хвосту и стираем его
+        hvost.hvostic[s] = {0, 0, s};
+      }
+      hvost.score = 0;                                             // хвост = 0
+      head.coord_x = shirina / 2;                                  // поевляемся по середне поля
       head.coord_y = visota / 2;
+    }
+  }
+  else if (head.Deatch == true && head.Win == true) {              // если мы в меню
+    window.Menu();                                                 // вызываем меню
+    player.set_butt();
+    if (player.azimut == 0) {                                      // если кнопка
+      window.teleport = true;                                      // мы сможем при столкновении со стенкой появляться в противоположном месте
+      head.Deatch = false;                                         // мы не проиграли
+      head.Win = false;                                            // мы не выиграли
+    }
+
+    else if (player.azimut == 1) {                                 // мы не сможем при столкновении со стенкой появляться в противоположном месте
+      window.teleport = false;
+      head.Deatch = false;                                         // мы не проиграли
+      head.Win = false;                                            // мы не выиграли
     }
   }
 }
